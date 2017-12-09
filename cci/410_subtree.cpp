@@ -41,6 +41,7 @@ BTree::BTree(vector<int>&dvec):data(0),right(nullptr),left(nullptr)
     }
 }
 
+/* Check if the current data element and all subtrees are equal */
 bool BTree::operator == (const BTree &that) const
 {
     if (((this->left == nullptr) != (that.left == nullptr)) ||
@@ -94,7 +95,14 @@ int main()
     while (cin >> t) {
         v2.push_back(t);
     }
-    BTree t1(v1), t2(v2);
-    cout << "Is subtree(t1->t2): " << t1.isSubtree(t2) << endl;
+
+    if (v1.size() < v2.size()) {
+        cout << "Is subtree(t1->t2): false" << endl;
+    } else if (v2.size() == 0) {
+        cout << "Is subtree(t1->t2): true" << endl;
+    } else {
+        BTree t1(v1), t2(v2);
+        cout << "Is subtree(t1->t2): " << t1.isSubtree(t2) << endl;
+    }
     return 0;
 }
