@@ -36,7 +36,12 @@ void Solver::init(istream &in) {
 }
 
 int Solver::findmincoins() {
+    /* For each amount, find the minimum no. of coins required using 
+     * mincoins(A) = min(mincoins(A-d<i>) for all denominations.*/
     for (auto a=1;a<=amount;a++) {
+        /* mincache array stores the min no. of coins for each denomination.
+         * Since, this no. can't be <1, no looping if we already know that
+         * mincache[a] == 1 */
         for (auto c=0;c<ndenoms && mincache[a] > 1;c++) {
             if (denoms[c] <= a) {
                 auto t = mincache[a-denoms[c]];
