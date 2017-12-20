@@ -8,12 +8,23 @@ constexpr int maxd=500;
 class Solver {
     int nr, nc, lsq;
     int imatrix[maxd][maxd];
-    int score_matrix[maxd][maxd] = {};
+    int nones[maxd][maxd] = {};
     int tones = 0;
+    void showmatrix();
     public:
         Solver(istream &in);
         int solve();
 };
+
+void Solver::showmatrix() {
+    for(auto r=0;r<nr;r++) {
+        for(auto c=0;c<nc;c++) {
+            cout << nones[r][c] << " ";
+        }
+        cout << "\n";
+    }
+    cout << "\n";
+}
 
 Solver::Solver(istream &in) {
     in >> nr >> nc;
@@ -24,30 +35,30 @@ Solver::Solver(istream &in) {
             in >> imatrix[r][c];
             if (imatrix[r][c] == 1) {
                 tones++;
+                nones[r][c] = 1;
             } 
         }
     }
 }
 
 int Solver::solve() {
-    int max=score_matrix[0][0];
-    
+    int max = (tones == nr * nc ? tones - 1 : tones + 1);
+
     for(auto s=1;s<lsq;s++) {
         for(auto r=0;r < nr-s;r++) {
             for(auto c=0;c < nc-s;c++) {
-                int score = score_matrix[r][c];
-                int nz=0,no=0;
+                int nz=0,no=0,score;
 
-                for(auto x=r;x<r+s+1;x++) {
-                    if(imatrix[x][c+s+1] == 0) nz++;
+                for(auto y=c;y<=c+s;y++) {
+                    if(imatrix[r+s][y] == 0) nz++;
                     else no++;
                 }
-                for(auto y=c;y<(c+s+1);y++) {
-                    if(imatrix[r+s+1][y] == 0) nz++;
+                for(auto x=r;x<=(r+s-1);x++) {
+                    if(imatrix[x][c+s] == 0) nz++;
                     else no++;
                 }
-                score += (nz - no);
-                score_matrix[r][c] = score;
+                nones[r][c] += no;
+                score = tones - nones[r][c] + ((s+1)*(s+1) - nones[r][c]);
                 if (score > max) max = score;
             }
         }
