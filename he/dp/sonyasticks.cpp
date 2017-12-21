@@ -3,8 +3,11 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+#include <map>
 
 using namespace std;
+
+using keyt=pair<int, int>;
 
 struct Stick {
     unsigned int x;
@@ -24,6 +27,8 @@ class Solver {
     int nsticks;
     vector<struct Stick> sticks;
     vector<struct State> state;
+    map<keyt, int> valcache;
+
     unsigned int solve(int sstick, int estick);
 
     public:
@@ -86,9 +91,15 @@ unsigned int Solver::solve() {
 
 unsigned int Solver::solve(int sstick, int estick) {
     int s, min = numeric_limits<int>::max();
+    keyt k = make_pair(sstick, estick);
 
     if (sstick > estick) return 0;
     if (sstick == estick || state[sstick].rreachstick >= estick || state[estick].lreachstick <= sstick) return 1;
+
+    auto cv = valcache.find(k);
+    if(cv != valcache.end()) {
+        return(cv->second);
+    }
 
     for(s=sstick;s<=estick;s++) {
         int lp = 1 + solve(s + 1, estick) + (state[s].lreachstick <= sstick ? 0 : solve(sstick, state[s].lreachstick - 1)); // left push of s
@@ -97,6 +108,7 @@ unsigned int Solver::solve(int sstick, int estick) {
 
         if (mp < min) min = mp;   // minimum for moves over all s
     }
+    valcache.insert(make_pair(k, min));
     return(min);
 }
 
