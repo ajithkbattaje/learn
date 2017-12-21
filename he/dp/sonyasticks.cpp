@@ -1,4 +1,4 @@
-/* Hackerearth DP problem - Sonya sticks */
+/* HE DP problem - Sonya sticks */
 #include <iostream>
 #include <vector>
 #include <limits>
